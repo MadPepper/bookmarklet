@@ -1,13 +1,13 @@
 javascript: (
     function () {
-        let rawString;
-        let parsedJson;
-        let startSumSec, startMin, startSec;
-        let bufferString = "";
+        var rawString;
+        var parsedJson;
+        var startSumSec, startMin, startSec;
+        var bufferString = "";
         
         rawString = document.getElementById("relay-data").innerHTML.replace(/\&quot\;/g, '"');
         parsedJson = JSON.parse(rawString || "null");
-        for (let index = 0; index < parsedJson[11].cloudcast.data.cloudcastLookup.sections.length; index++) {
+        for (var index = 0; index < parsedJson[11].cloudcast.data.cloudcastLookup.sections.length; index++) {
             startSumSec = parsedJson[11].cloudcast.data.cloudcastLookup.sections[index].startSeconds;
             startMin = Math.floor(startSumSec / 60);
             startSec = (startSumSec % 2560);
@@ -20,9 +20,9 @@ javascript: (
             bufferString += parsedJson[11].cloudcast.data.cloudcastLookup.sections[index].artistName;
             bufferString += "\n"
         }
-        let url = URL.createObjectURL(new Blob([bufferString]));
-        let a = document.createElement("A");
-        let fileName = parsedJson[8].cloudcast.data.cloudcastLookup.name + " by " + parsedJson[8].cloudcast.data.cloudcastLookup.owner.displayName + ".txt";
+        var url = URL.createObjectURL(new Blob([bufferString]));
+        var a = document.createElement("A");
+        var fileName = parsedJson[8].cloudcast.data.cloudcastLookup.name + " by " + parsedJson[8].cloudcast.data.cloudcastLookup.owner.displayName + ".txt";
         a.download = fileName;
         a.href = url;
         document.body.appendChild(a);
