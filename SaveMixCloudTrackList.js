@@ -8,6 +8,7 @@ javascript: (
         var mixTitle;
         var djName;
         var relayData;
+      	var index;
 
         relayData = document.getElementById("relay-data");
         if (!relayData) {
@@ -20,7 +21,7 @@ javascript: (
         // console.log(parsedJson);
 
         // tracklistを抽出
-        for (var index = 0; index < parsedJson.length; index++) {
+        for (index = 0; index < parsedJson.length; index++) {
             if (parsedJson[index].cloudcast) {
                 if (parsedJson[index].cloudcast.data) {
                     if (parsedJson[index].cloudcast.data.cloudcastLookup) {
@@ -35,8 +36,8 @@ javascript: (
         // console.log(tracklist);
 
         // MIXのタイトルを取得
-        mixTitle = "UNKNOWN"
-        for (var index = 0; index < parsedJson.length; index++) {
+        mixTitle = "UNKNOWN";
+        for (index = 0; index < parsedJson.length; index++) {
             if (parsedJson[index].cloudcast) {
                 if (parsedJson[index].cloudcast.data) {
                     if (parsedJson[index].cloudcast.data.cloudcastLookup) {
@@ -51,8 +52,8 @@ javascript: (
         // console.log(mixTitle);
 
         // DJの名前を取得
-        djName = "UNKNOWN"
-        for (var index = 0; index < parsedJson.length; index++) {
+        djName = "UNKNOWN";
+        for (index = 0; index < parsedJson.length; index++) {
             if (parsedJson[index].cloudcast) {
                 if (parsedJson[index].cloudcast.data) {
                     if (parsedJson[index].cloudcast.data.cloudcastLookup) {
@@ -70,7 +71,7 @@ javascript: (
 
         if (tracklist) {
             // tracklistを整形
-            for (var index = 0; index < tracklist.length; index++) {
+            for (index = 0; index < tracklist.length; index++) {
                 startSumSec = tracklist[index].startSeconds;
                 startMin = Math.floor(startSumSec / 60);
                 startSec = (startSumSec % 2560);
