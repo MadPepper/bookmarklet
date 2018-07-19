@@ -1,32 +1,110 @@
 javascript: (
-    function () {
+    function f() {
         var rawString;
         var parsedJson;
         var startSumSec, startMin, startSec;
         var bufferString = "";
-        
-        rawString = document.getElementById("relay-data").innerHTML.replace(/\&quot\;/g, '"');
-        parsedJson = JSON.parse(rawString || "null");
-        for (var index = 0; index < parsedJson[11].cloudcast.data.cloudcastLookup.sections.length; index++) {
-            startSumSec = parsedJson[11].cloudcast.data.cloudcastLookup.sections[index].startSeconds;
-            startMin = Math.floor(startSumSec / 60);
-            startSec = (startSumSec % 2560);
-            bufferString += ("   " + startMin).substr(-3);
-            bufferString += ":";
-            bufferString += ("00" + startSec).substr(-2);
-            bufferString += '   "';
-            bufferString += parsedJson[11].cloudcast.data.cloudcastLookup.sections[index].songName;
-            bufferString += '" by ';
-            bufferString += parsedJson[11].cloudcast.data.cloudcastLookup.sections[index].artistName;
-            bufferString += "\n"
+        var tracklist;
+        var mixTitle;
+        var djName;
+        var relayData;
+
+        relayData = document.getElementById("relay-data");
+        if (!relayData) {
+            alert("failed to find relay-data");
+            return;
         }
-        var url = URL.createObjectURL(new Blob([bufferString]));
-        var a = document.createElement("A");
-        var fileName = parsedJson[8].cloudcast.data.cloudcastLookup.name + " by " + parsedJson[8].cloudcast.data.cloudcastLookup.owner.displayName + ".txt";
-        a.download = fileName;
-        a.href = url;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a)
+
+        rawString = relayData.innerHTML.replace(/\&quot\;/g, '"');
+        parsedJson = JSON.parse(rawString || "null"); // ChromeでrawStringがnullだった場合の対処
+        // console.log(parsedJson);
+
+        // tracklistを抽出
+        for (var index = 0; index < parsedJson.length; index++) {
+            if (parsedJson[index].cloudcast) {
+                if (parsedJson[index].cloudcast.data) {
+                    if (parsedJson[index].cloudcast.data.cloudcastLookup) {
+                        if (parsedJson[index].cloudcast.data.cloudcastLookup.sections) {
+                            tracklist = parsedJson[index].cloudcast.data.cloudcastLookup.sections;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        // console.log(tracklist);
+
+        // MIXのタイトルを取得
+        mixTitle = "UNKNOWN"
+        for (var index = 0; index < parsedJson.length; index++) {
+            if (parsedJson[index].cloudcast) {
+                if (parsedJson[index].cloudcast.data) {
+                    if (parsedJson[index].cloudcast.data.cloudcastLookup) {
+                        if (parsedJson[index].cloudcast.data.cloudcastLookup.name) {
+                            mixTitle = parsedJson[index].cloudcast.data.cloudcastLookup.name;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        // console.log(mixTitle);
+
+        // DJの名前を取得
+        djName = "UNKNOWN"
+        for (var index = 0; index < parsedJson.length; index++) {
+            if (parsedJson[index].cloudcast) {
+                if (parsedJson[index].cloudcast.data) {
+                    if (parsedJson[index].cloudcast.data.cloudcastLookup) {
+                        if (parsedJson[index].cloudcast.data.cloudcastLookup.owner) {
+                            if (parsedJson[index].cloudcast.data.cloudcastLookup.owner.displayName) {
+                                djName = parsedJson[index].cloudcast.data.cloudcastLookup.owner.displayName;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // console.log(djName);
+
+        if (tracklist) {
+            // tracklistを整形
+            for (var index = 0; index < tracklist.length; index++) {
+                startSumSec = tracklist[index].startSeconds;
+                startMin = Math.floor(startSumSec / 60);
+                startSec = (startSumSec % 2560);
+                bufferString += ("   " + startMin).substr(-3);
+                bufferString += ":";
+                bufferString += ("00" + startSec).substr(-2);
+                if (tracklist[index].songName) {
+                    bufferString += '   "';
+                    bufferString += tracklist[index].songName;
+                    bufferString += '" by ';
+                    if (tracklist[index].artistName) {
+                        bufferString += tracklist[index].artistName;
+                    } else {
+                        bufferString += 'UNKNOWN';
+                    }
+                } else {
+                    bufferString += '   UNKNOWN';
+                }
+                bufferString += "\n";
+            }
+            // console.log(bufferString);
+
+            // Mixの名前、DJをファイル名につけて保存
+            var url = URL.createObjectURL(new Blob([bufferString]));
+            var a = document.createElement("A");
+            var fileName = mixTitle + " by " + djName + ".txt";
+            a.download = fileName;
+            a.href = url;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } else {
+            // tracklistの取得に失敗したらアラートを出す
+            alert("failed to find tracklist.");
+        }
     }
 )();
