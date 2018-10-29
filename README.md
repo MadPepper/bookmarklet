@@ -6,6 +6,7 @@ My bookmarklets(for GoogleChrome)
 ## ShareThisPage
 - 今見てるページをMarkDown形式で共有できるブックマークレット
 - ページ内の文章を選択した状態で使うと引用符付きでその文章を含めて共有できる
+- ブックマークレットをクリックすると内容がクリップボードにコピーされる
 
 ## SaveMixCloudTrackList
 - mixcloudのトラックリストを抽出するプログラム
